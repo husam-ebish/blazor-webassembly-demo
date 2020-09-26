@@ -16,6 +16,7 @@ using ProtoBuf.Grpc.Server;
 using Microsoft.AspNetCore.Authorization;
 using FluentValidation.AspNetCore;
 using ConfTool.Shared.Validation;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace ConfTool.Server
 {
@@ -30,6 +31,12 @@ namespace ConfTool.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // these two are needed for render-mode="WebAssemblyPrerendered"
+            services.AddApiAuthorization();
+            services.AddTransient<AuthenticationStateProvider, EmptyAuthenticationStateProvider>();
+
+            services.AddServerSideBlazor();
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddDbContext<ConferencesDbContext>(
@@ -103,7 +110,7 @@ namespace ConfTool.Server
 
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
+                endpoints.MapFallbackToFile("/_Host");
             });
         }
     }
