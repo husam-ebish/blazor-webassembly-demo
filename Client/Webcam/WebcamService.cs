@@ -1,5 +1,4 @@
 ﻿using Microsoft.JSInterop;
-using Microsoft.JSInterop.Implementation;
 using System;
 using System.Threading.Tasks;
 
@@ -7,24 +6,24 @@ namespace ConfTool.Client.Webcam
 {
     public class WebcamService : IWebcamService, IAsyncDisposable
     {
-        private readonly Lazy<Task<JSObjectReference>> _moduleTask;
+        private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
 
         public WebcamService(IJSRuntime jsRuntime)
         {
-            _moduleTask = new(() => jsRuntime.InvokeAsync<JSObjectReference>(
+            _moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
                "import", "./jsinterop/webcam.js").AsTask());
         }
 
-        public async Task StartVideoAsync(WebcamOptions options)
+        public async Task StartVideo(WebcamOptions options)
         {
             var module = await _moduleTask.Value;
-            await module.InvokeVoidAsync("startVideo", options);
+            ((IJSInProcessObjectReference)module).InvokeVoid("startVideo", options);
         }
 
-        public async Task TakePictureAsync()
+        public async Task TakePicture()
         {
             var module = await _moduleTask.Value;
-            await module.InvokeVoidAsync("takePicture");
+            ((IJSInProcessObjectReference)module).InvokeVoid("takePicture");
         }
 
         public async ValueTask DisposeAsync()

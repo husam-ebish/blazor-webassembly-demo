@@ -4,7 +4,7 @@ namespace ConfTool.Client.Webcam
 {
     public interface IWebcamService
     {
-        Task StartVideoAsync(WebcamOptions options);
-        Task TakePictureAsync();
+        Task StartVideo(WebcamOptions options);
+        Task TakePicture();
     }
 }
